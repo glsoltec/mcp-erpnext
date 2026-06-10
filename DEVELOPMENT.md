@@ -39,19 +39,13 @@ python src\cli.py configure --interactive
 
 ## 🚀 Rodar o Servidor
 
-### Desenvolvimento Local
 ```bash
 python src\server.py
 ```
 
-O servidor estará disponível na porta 9000.
+O servidor estará disponível na porta 9000 e pronto para se conectar ao seu ERPNext em produção.
 
-### Com Docker Compose (ERPNext Completo)
-```bash
-docker-compose up -d
-```
-
-Acesse em: http://localhost:8000
+**Nota:** Este plugin se conecta a uma instância ERPNext existente via API REST. Não precisa de Docker.
 
 ## ✅ Testes
 
