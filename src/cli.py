@@ -4,6 +4,11 @@
 import argparse
 import json
 import sys
+import os
+
+# Add src directory to path for imports
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
 from config import PluginConfig
 from erpnext_client import ERPNextClient
 

@@ -2,7 +2,10 @@ import requests
 import json
 from typing import Any, Dict, List, Optional
 from requests.auth import HTTPBasicAuth
-from .config import ERPNextConfig
+try:
+    from .config import ERPNextConfig
+except ImportError:
+    from config import ERPNextConfig
 
 class ERPNextClient:
     def __init__(self, config: ERPNextConfig):
