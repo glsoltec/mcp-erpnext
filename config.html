@@ -214,6 +214,46 @@
             display: block;
         }
 
+        .test-info {
+            background: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            color: #004085;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            display: none;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .test-info.show {
+            display: block;
+        }
+
+        .test-info strong {
+            display: block;
+            margin-bottom: 10px;
+            margin-top: 10px;
+            color: #003d82;
+        }
+
+        .test-info code {
+            background: #f0f7ff;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+
+        .test-info pre {
+            background: #f0f7ff;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 10px 0;
+            border-left: 3px solid #0066cc;
+        }
+
         .config-saved strong {
             display: block;
             margin-bottom: 8px;
@@ -296,6 +336,29 @@
             Você pode fechar esta página e usar o Claude Desktop normalmente.
         </div>
 
+        <div id="testInfo" class="test-info">
+            <strong>🧪 Para testar a conexão via Terminal:</strong>
+
+            <code>cd C:\Users\Pascoal\Documents\GitHub\mcp-erpnext</code><br><br>
+
+            <code>python src/cli.py test</code><br><br>
+
+            Você deve ver:<br>
+            <pre>✓ Connection successful!
+  Message: Connection successful</pre>
+
+            <strong>📌 Se receber erro:</strong>
+            <ul>
+                <li>Verifique se a URL está correta</li>
+                <li>Confirme API Key e API Secret (sem espaços extras)</li>
+                <li>Certifique-se que seu ERPNext está online</li>
+            </ul>
+
+            <strong>🚀 Próximo passo:</strong>
+            <code>python src/server.py</code><br>
+            (Inicia o servidor MCP para Claude Desktop)
+        </div>
+
         <div id="status" class="status"></div>
     </div>
 
@@ -348,37 +411,19 @@
                 return;
             }
 
-            showStatus('🔄 Testando conexão...', true);
+            showStatus('💾 Salvando configuração...', true);
 
-            // Simular teste via Python (em um cenário real, isso seria uma chamada ao servidor MCP)
-            fetch(`${url}/api/method/frappe.client.get_list?doctype=User&limit_page_length=1`, {
-                headers: {
-                    'Authorization': 'Basic ' + btoa(apiKey + ':' + apiSecret)
-                }
-            })
-            .then(response => {
-                if (response.status === 401) {
-                    throw new Error('Credenciais inválidas (401)');
-                }
-                if (response.status === 403) {
-                    throw new Error('Acesso negado (403)');
-                }
-                if (!response.ok) {
-                    throw new Error(`Erro HTTP ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(() => {
-                showStatus('✅ Conexão bem-sucedida!');
-                showAlert('✅ Conexão com ERPNext testada com sucesso!', 'success');
+            // Salvar primeiro
+            const config = { url, apiKey, apiSecret };
+            localStorage.setItem('erpnextConfig', JSON.stringify(config));
 
-                // Salvar após sucesso
-                saveConfig();
-            })
-            .catch(error => {
-                showStatus('❌ Falha na conexão!');
-                showAlert(`❌ Erro na conexão: ${error.message}. Verifique URL e credenciais.`, 'error');
-            });
+            // Mostrar instruções de teste via CLI
+            setTimeout(() => {
+                showAlert('✅ Configuração salva! Teste via CLI para verificar', 'success');
+                showStatus('');
+                document.getElementById('configSaved').classList.add('show');
+                document.getElementById('testInfo').style.display = 'block';
+            }, 800);
         }
 
         function saveConfig() {
@@ -395,16 +440,13 @@
             const config = { url, apiKey, apiSecret };
             localStorage.setItem('erpnextConfig', JSON.stringify(config));
 
-            // Tentar salvar via Python também (se servidor estiver rodando)
             showStatus('💾 Salvando configuração...', true);
-
-            // Aqui você poderia chamar o servidor MCP para salvar
-            // Por enquanto, apenas salvamos no localStorage
 
             setTimeout(() => {
                 showAlert('✅ Configuração salva com sucesso!', 'success');
                 document.getElementById('configSaved').classList.add('show');
-                showStatus('✅ Pronto! Reinicie o Claude Desktop para ativar.');
+                document.getElementById('testInfo').classList.add('show');
+                showStatus('');
             }, 800);
         }
 
