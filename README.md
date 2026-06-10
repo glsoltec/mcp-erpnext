@@ -13,34 +13,24 @@ Plugin MCP (Model Context Protocol) para integração entre Claude e ERPNext v16
 - ✅ Interface CLI para configuração
 - ✅ Armazenamento seguro de credenciais
 
-## Instalação
+## 📦 Instalação
+
+### Guia Rápido
+
+Para instalação completa e detalhada, veja **[INSTALL.md](INSTALL.md)** (recomendado para primeira instalação).
+
+### Resumo
+1. Instale Python 3.8+
+2. Baixe o repositório
+3. Execute `pip install -r requirements.txt`
+4. Configure com `python src/cli.py configure --interactive`
+5. Adicione ao Claude Desktop via `claude_desktop_config.json`
+6. Reinicie Claude Desktop
 
 ### Pré-requisitos
 - Python 3.8+
-- pip (gerenciador de pacotes Python)
-- Acesso a uma instância ERPNext v16 (https://erpnext.glsoltec.com.br ou similar)
-
-### Passos de Instalação
-
-1. **Clone o repositório:**
-```bash
-git clone https://github.com/seu-usuario/mcp-erpnext.git
-cd mcp-erpnext
-```
-
-2. **Instale as dependências:**
-```bash
-pip install -r requirements.txt
-```
-
-3. **Configure o plugin:**
-```bash
-# Modo interativo
-python src/cli.py configure --interactive
-
-# Ou com argumentos diretos
-python src/cli.py configure --url https://seu-instance.erpnext.com --api-key sua_chave --api-secret seu_secret
-```
+- Claude Desktop
+- Acesso ao ERPNext v16 (https://erpnext.glsoltec.com.br)
 
 ## Configuração
 
@@ -245,11 +235,25 @@ As credenciais são armazenadas de forma segura em:
 - Edição (Write) apenas se necessário
 - Exclusão (Delete) restrita ao necessário
 
-## Documentação
+## 📚 Documentação
 
+### 🚀 Comece Aqui
+- **[INSTALL.md](INSTALL.md)** - Guia passo a passo de instalação (⭐ Comece aqui!)
+- **[QUICKSTART.md](QUICKSTART.md)** - Instalação em 5 minutos
+
+### 💡 Usando o Plugin
+- **[.claude/README.md](.claude/README.md)** - Como usar com Claude Desktop
+- **[API.md](API.md)** - Referência técnica de todas as ferramentas
+- **[CLAUDE_INTEGRATION.md](CLAUDE_INTEGRATION.md)** - Integração avançada com Claude
+
+### 🛠️ Desenvolvimento
+- **[DEVELOPMENT.md](DEVELOPMENT.md)** - Guia para desenvolvedores
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Como contribuir
+
+### 📖 Referências Externas
 - [Documentação ERPNext](https://docs.frappe.io/erpnext/introduction)
 - [Frappe REST API](https://frappe.io/docs/user/en/guides/basics/api/rest)
-- [Guia de Integração com Claude](.claude/README.md)
+- [Claude Documentation](https://docs.anthropic.com)
 
 ## Troubleshooting
 

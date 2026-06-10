@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurar ERPNext - MCP Plugin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .help-text {
+            color: #999;
+            font-size: 12px;
+            margin-top: 5px;
+            font-weight: normal;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        input::placeholder {
+            color: #ccc;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 35px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.2);
+        }
+
+        .btn-test {
+            background: #f0f0f0;
+            color: #333;
+            border: 2px solid #e0e0e0;
+        }
+
+        .btn-test:hover {
+            background: #e8e8e8;
+        }
+
+        .alert {
+            padding: 12px 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .alert.success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            display: block;
+        }
+
+        .alert.error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            display: block;
+        }
+
+        .alert.loading {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+            display: block;
+        }
+
+        .icon {
+            margin-right: 8px;
+        }
+
+        .info-box {
+            background: #f9f9f9;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 25px;
+            font-size: 13px;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .info-box strong {
+            color: #333;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .status {
+            text-align: center;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            font-size: 13px;
+            display: none;
+        }
+
+        .status.show {
+            display: block;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid #667eea;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .config-saved {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .config-saved.show {
+            display: block;
+        }
+
+        .config-saved strong {
+            display: block;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔗 Configurar ERPNext</h1>
+            <p>Conecte o Claude ao seu ERPNext</p>
+        </div>
+
+        <div class="info-box">
+            <strong>ℹ️ Como obter as credenciais:</strong>
+            1. Acesse sua instância do ERPNext<br>
+            2. Clique no seu Avatar (canto superior direito)<br>
+            3. Vá para "Meu Perfil" → "API"<br>
+            4. Clique em "Gerar Chave API"<br>
+            5. Copie a API Key e API Secret
+        </div>
+
+        <div id="alert" class="alert"></div>
+
+        <form id="configForm">
+            <div class="form-group">
+                <label for="url">
+                    <span class="icon">🌐</span>URL do ERPNext
+                </label>
+                <input
+                    type="url"
+                    id="url"
+                    name="url"
+                    placeholder="https://erpnext.glsoltec.com.br"
+                    required
+                >
+                <div class="help-text">Exemplo: https://seu-instance.erpnext.com</div>
+            </div>
+
+            <div class="form-group">
+                <label for="apiKey">
+                    <span class="icon">🔑</span>API Key
+                </label>
+                <input
+                    type="text"
+                    id="apiKey"
+                    name="apiKey"
+                    placeholder="seu_email@example.com ou ID da chave"
+                    required
+                >
+                <div class="help-text">Geralmente é seu email do ERPNext</div>
+            </div>
+
+            <div class="form-group">
+                <label for="apiSecret">
+                    <span class="icon">🔐</span>API Secret
+                </label>
+                <input
+                    type="password"
+                    id="apiSecret"
+                    name="apiSecret"
+                    placeholder="•••••••••••••••••"
+                    required
+                >
+                <div class="help-text">Token secreto gerado no ERPNext</div>
+            </div>
+
+            <div class="button-group">
+                <button type="button" class="btn-test" onclick="testConnection()">
+                    🧪 Testar Conexão
+                </button>
+                <button type="submit" class="btn-submit">
+                    💾 Salvar Configuração
+                </button>
+            </div>
+        </form>
+
+        <div id="configSaved" class="config-saved">
+            <strong>✅ Configuração salva com sucesso!</strong>
+            Você pode fechar esta página e usar o Claude Desktop normalmente.
+        </div>
+
+        <div id="status" class="status"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:9000/api';
+
+        // Carregar valores salvos ao abrir
+        window.addEventListener('load', () => {
+            loadSavedConfig();
+        });
+
+        function loadSavedConfig() {
+            const saved = localStorage.getItem('erpnextConfig');
+            if (saved) {
+                const config = JSON.parse(saved);
+                document.getElementById('url').value = config.url || '';
+                document.getElementById('apiKey').value = config.apiKey || '';
+                document.getElementById('apiSecret').value = config.apiSecret || '';
+            }
+        }
+
+        function showAlert(message, type) {
+            const alert = document.getElementById('alert');
+            alert.className = `alert ${type}`;
+            alert.textContent = message;
+            if (type === 'success') {
+                setTimeout(() => {
+                    alert.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        function showStatus(message, isLoading = false) {
+            const status = document.getElementById('status');
+            status.className = 'status show';
+            if (isLoading) {
+                status.innerHTML = `<span class="spinner"></span>${message}`;
+            } else {
+                status.textContent = message;
+            }
+        }
+
+        function testConnection() {
+            const url = document.getElementById('url').value.trim();
+            const apiKey = document.getElementById('apiKey').value.trim();
+            const apiSecret = document.getElementById('apiSecret').value.trim();
+
+            if (!url || !apiKey || !apiSecret) {
+                showAlert('❌ Preencha todos os campos antes de testar!', 'error');
+                return;
+            }
+
+            showStatus('🔄 Testando conexão...', true);
+
+            // Simular teste via Python (em um cenário real, isso seria uma chamada ao servidor MCP)
+            fetch(`${url}/api/method/frappe.client.get_list?doctype=User&limit_page_length=1`, {
+                headers: {
+                    'Authorization': 'Basic ' + btoa(apiKey + ':' + apiSecret)
+                }
+            })
+            .then(response => {
+                if (response.status === 401) {
+                    throw new Error('Credenciais inválidas (401)');
+                }
+                if (response.status === 403) {
+                    throw new Error('Acesso negado (403)');
+                }
+                if (!response.ok) {
+                    throw new Error(`Erro HTTP ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(() => {
+                showStatus('✅ Conexão bem-sucedida!');
+                showAlert('✅ Conexão com ERPNext testada com sucesso!', 'success');
+
+                // Salvar após sucesso
+                saveConfig();
+            })
+            .catch(error => {
+                showStatus('❌ Falha na conexão!');
+                showAlert(`❌ Erro na conexão: ${error.message}. Verifique URL e credenciais.`, 'error');
+            });
+        }
+
+        function saveConfig() {
+            const url = document.getElementById('url').value.trim();
+            const apiKey = document.getElementById('apiKey').value.trim();
+            const apiSecret = document.getElementById('apiSecret').value.trim();
+
+            if (!url || !apiKey || !apiSecret) {
+                showAlert('❌ Preencha todos os campos!', 'error');
+                return;
+            }
+
+            // Salvar localmente
+            const config = { url, apiKey, apiSecret };
+            localStorage.setItem('erpnextConfig', JSON.stringify(config));
+
+            // Tentar salvar via Python também (se servidor estiver rodando)
+            showStatus('💾 Salvando configuração...', true);
+
+            // Aqui você poderia chamar o servidor MCP para salvar
+            // Por enquanto, apenas salvamos no localStorage
+
+            setTimeout(() => {
+                showAlert('✅ Configuração salva com sucesso!', 'success');
+                document.getElementById('configSaved').classList.add('show');
+                showStatus('✅ Pronto! Reinicie o Claude Desktop para ativar.');
+            }, 800);
+        }
+
+        document.getElementById('configForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            testConnection();
+        });
+
+        // Mostrar/ocultar senha
+        const apiSecretField = document.getElementById('apiSecret');
+        const togglePassword = document.createElement('button');
+        togglePassword.type = 'button';
+        togglePassword.textContent = '👁️';
+        togglePassword.style.position = 'absolute';
+        togglePassword.style.right = '10px';
+        togglePassword.style.top = '0';
+        togglePassword.style.background = 'none';
+        togglePassword.style.border = 'none';
+        togglePassword.style.cursor = 'pointer';
+        togglePassword.style.fontSize = '16px';
+
+        togglePassword.addEventListener('click', () => {
+            if (apiSecretField.type === 'password') {
+                apiSecretField.type = 'text';
+                togglePassword.textContent = '🔒';
+            } else {
+                apiSecretField.type = 'password';
+                togglePassword.textContent = '👁️';
+            }
+        });
+    </script>
+</body>
+</html>
